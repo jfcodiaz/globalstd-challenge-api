@@ -1,0 +1,52 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+      target: Dev
+    container_name: ${PROJECT_PREFIX}
+    hostname: ${PROJECT_PREFIX}
+    ports:
+      - "${WEB_PORT}:8080"
+    volumes:
+      - ./code:/var/www/html
+      - .:/app
+      - postgres_data:/var/lib/postgresql/14/main
+    working_dir: /app
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=pgsql
+      - DB_HOST=localhost
+      - DB_PORT=5432
+    env_file:
+      - .env
+  prod:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    container_name: ${PROJECT_PREFIX}-prod
+    hostname: ${PROJECT_PREFIX}-prod
+    ports:
+      - "${WEB_PORT_PRD}:8080"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    env_file:
+      - .env
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ${PROJECT_PREFIX}-pgadmin
+    ports:
+      - "${PG_ADMIN}:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    depends_on:
+      - app
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  pgadmin_data:
+  postgres_data:

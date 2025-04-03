@@ -2,7 +2,7 @@ name: 🚀 Deploy PHP App to Cloud Run
 
 on:
   push:
-    branches: [master]
+    branches: [master, chore/2-setup-dockerized-development-and-prd-envs]
 
 jobs:
   deploy:
@@ -28,7 +28,11 @@ jobs:
 
     - name: 🐳 Build and push Docker image
       run: |
-        docker build -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA .
+        docker build \
+          --file docker/web/Dockerfile \
+          --target prod \
+          -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA \
+          .
         docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA
 
     - name: 🚀 Deploy to Cloud Run
