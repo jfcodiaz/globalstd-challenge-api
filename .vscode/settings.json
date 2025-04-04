@@ -1,0 +1,14 @@
+{
+ "files.eol": "\n",
+ "files.trimTrailingWhitespace": true,
+ "files.insertFinalNewline": true,
+ "editor.rulers": [80, 120],
+ "editor.tabSize": 2,
+ "editor.renderWhitespace": "all",
+ "[vue]": {
+     "editor.tabSize": 2
+ },
+ "[javascript]": {
+     "editor.tabSize": 2
+ }
+}

@@ -2,7 +2,7 @@ name: 🚀 Deploy PHP App to Cloud Run
 
 on:
   push:
-    branches: [master, chore/2-setup-dockerized-development-and-prd-envs]
+    branches: [master]
 
 jobs:
   deploy:
@@ -42,4 +42,5 @@ jobs:
           --platform managed \
           --region ${{ secrets.GCP_REGION }} \
           --allow-unauthenticated \
+          --set-env-vars "APP_KEY=${{ secrets.APP_KEY }},DB_DATABASE=${{ secrets.DB_DATABASE }},DB_DATABASE_TEST=${{ secrets.DB_DATABASE_TEST }},DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }},APP_ENV=production,APP_DEBUG=true,DB_CONNECTION=pgsql" \
           --quiet

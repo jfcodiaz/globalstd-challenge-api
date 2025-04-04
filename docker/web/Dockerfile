@@ -1,15 +1,9 @@
 # ============================
 # STAGE: BASE
 # ============================
-FROM ubuntu:22.04 as base
+FROM ubuntu:22.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
-
-# Environment variables for PostgreSQL
-ENV DB_NAME=laravel \
-    DB_NAME_TEST=laravel_test \
-    DB_USER=laravel \
-    DB_PASSWORD=secret
 
 # Install base dependencies
 RUN apt-get update && apt-get install -y \
@@ -74,12 +68,9 @@ RUN rm -rf /var/lib/postgresql/14/main && \
     chown -R postgres:postgres /var/lib/postgresql && \
     su - postgres -c '/usr/lib/postgresql/14/bin/initdb -D /var/lib/postgresql/14/main' && \
     echo "listen_addresses = '*'" >> /var/lib/postgresql/14/main/postgresql.conf && \
-    echo "host all all 0.0.0.0/0 md5" >> /var/lib/postgresql/14/main/pg_hba.conf && \
-    su - postgres -c "/usr/lib/postgresql/14/bin/pg_ctl -D /var/lib/postgresql/14/main -o '-c listen_addresses=*' -w start" && \
-    su - postgres -c "psql -c \"CREATE USER ${DB_USER} WITH PASSWORD '${DB_PASSWORD}';\"" && \
-    su - postgres -c "psql -c \"CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};\"" && \
-    su - postgres -c "psql -c \"CREATE DATABASE ${DB_NAME_TEST} OWNER ${DB_USER};\"" && \
-    su - postgres -c "/usr/lib/postgresql/14/bin/pg_ctl -D /var/lib/postgresql/14/main stop"
+    echo "host all all 0.0.0.0/0 md5" >> /var/lib/postgresql/14/main/pg_hba.conf
+COPY ./docker/web/php-fpm/www-dev.conf /etc/php/8.2/fpm/pool.d/www.conf
+COPY ./docker/web/nginx/default-prd.conf /etc/nginx/sites-available/default
 
 # ============================
 # STAGE: DEV
@@ -93,14 +84,12 @@ RUN echo "zend_extension=xdebug.so" >> /etc/php/8.2/fpm/php.ini && \
     echo "xdebug.start_with_request=yes" >> /etc/php/8.2/fpm/php.ini && \
     echo "xdebug.client_host=host.docker.internal" >> /etc/php/8.2/fpm/php.ini
 
-COPY ./docker/web/nginx/default.conf /etc/nginx/sites-available/default
-COPY ./docker/web/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 WORKDIR /var/www/html
 
 EXPOSE 8080
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["tail", "-f", "/dev/null"]
 
 # ============================
 # STAGE: TEST
@@ -114,9 +103,6 @@ RUN echo "zend_extension=xdebug.so" >> /etc/php/8.2/fpm/php.ini && \
     echo "xdebug.start_with_request=yes" >> /etc/php/8.2/fpm/php.ini && \
     echo "xdebug.client_host=host.docker.internal" >> /etc/php/8.2/fpm/php.ini
 
-COPY ./docker/web/nginx/default.conf /etc/nginx/sites-available/default
-COPY ./docker/web/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 WORKDIR /var/www/html
 
 EXPOSE 8080
@@ -128,12 +114,16 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 # ============================
 FROM base AS prod
 
-COPY ./docker/web/nginx/default.conf /etc/nginx/sites-available/default
-COPY ./docker/web/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./docker/web/supervisord/supervisord-prd.conf /etc/supervisor/conf.d/supervisord.conf
+
 COPY ./code /var/www/html
+
+COPY ./docker/web/init.sh /init.sh
+RUN composer install --working-dir=/var/www/html
 
 WORKDIR /var/www/html
 
 EXPOSE 8080
-
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD [ "bash", "/init.sh" ]
+# CMD ["tail", "-f", "/var/log/supervisor/supervisord.log"]
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
