@@ -1,3 +1,5 @@
 .history
 key.json
 .env
+.code/storage/framework/cache
+.code/storage/framework/views
