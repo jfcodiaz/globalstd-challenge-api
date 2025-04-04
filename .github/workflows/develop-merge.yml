@@ -1,0 +1,32 @@
+name: Develop Merge Check
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+defaults:
+  run:
+    working-directory: ./code
+
+jobs:
+  laravel-pint:
+    name: Laravel Pint Code Style Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🧰 Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo, pdo_pgsql
+          coverage: none
+
+      - name: 📦 Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: 🧼 Run Laravel Pint (code style test only)
+        run: ./vendor/bin/pint --test -v

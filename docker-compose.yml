@@ -11,6 +11,9 @@ services:
     volumes:
       - ./code:/var/www/html
       - .:/app
+      - vendor_volume:/app/code/vendor
+      - cache_volume:/app/code/storage/framework/cache
+      - view_cache_volume:/app/code/storage/framework/views
       - vendor_volume:/var/www/html/vendor
       - cache_volume:/var/www/html/storage/framework/cache
       - view_cache_volume:/var/www/html/storage/framework/views
@@ -18,7 +21,7 @@ services:
       - ./docker/web/init.sh:/init.sh
       - ./docker/web/supervisord/supervisord-dev.conf:/etc/supervisor/conf.d/supervisord.conf
       - ./docker/web/nginx/default-dev.conf:/etc/nginx/conf.d/default.conf
-    working_dir: /var/www/html
+    working_dir: /app/code
     env_file:
       - .env
     command: bash /init.sh & tail -f /var/log/supervisor/supervisord.log
