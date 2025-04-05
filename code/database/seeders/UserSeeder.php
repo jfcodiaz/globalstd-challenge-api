@@ -9,30 +9,20 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::firstOrCreate(
-            ['email' => 'admin@local.dev'],
-            [
-                'name' => 'Admin Test',
-                'email_verified_at' => now(),
-            ]
-        );
+        User::factory()->withRoles(['Client'])->create([
+            'email' => 'user@local.dev',
+            'name' => 'User Demo',
+        ]);
 
-        User::firstOrCreate(
-            ['email' => 'collaborator@local.dev'],
-            [
-                'name' => 'Colaborador Demo',
-                'email_verified_at' => now(),
-            ]
-        );
+        User::factory()->withRoles(['Admin'])->create([
+            'email' => 'collaborator@local.dev',
+            'name' => 'Colaborador Demo',
+        ]);
 
-        User::firstOrCreate(
-            ['email' => 'user@local.dev'],
-            [
-                'name' => 'User Demo',
-                'email_verified_at' => now(),
-            ]
-        );
-
-        User::factory(50)->create();
+        User::factory()->withRoles(['SuperAdmin'])->create([
+            'email' => 'admin@local.dev',
+            'name' => 'Admin Test',
+        ]);
+        User::factory(50)->withRoles(['Client'])->create();
     }
 }
