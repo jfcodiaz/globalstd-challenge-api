@@ -4,9 +4,12 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class RoleAccessTest extends TestCase
 {
-    public function test_the_application_returns_a_successful_response(): void
+    /**
+     * A basic feature test example.
+     */
+    public function test_example(): void
     {
         $response = $this->get('/');
 
