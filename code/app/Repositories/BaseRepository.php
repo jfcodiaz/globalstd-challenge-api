@@ -34,4 +34,9 @@ abstract class BaseRepository
     {
         return $this->model()->create($data);
     }
+
+    public function getRandom(): ?Model
+    {
+        return $this->model()->inRandomOrder()->first();
+    }
 }

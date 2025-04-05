@@ -1,5 +1,6 @@
 <?php
 
+use App\Repositories\RoleRepository;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,11 +15,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('roles')->insert([
-            ['name' => 'SuperAdmin', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Client', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        app(RoleRepository::class)->createBaseRoles();
     }
 
     public function down(): void
