@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export DB_DATABASE=${DB_DATABASE}
+export DB_NAME=${DB_NAME}
 export DB_DATABASE_TEST=${DB_DATABASE_TEST}
 export DB_USERNAME=${DB_USERNAME}
 export DB_PASSWORD=${DB_PASSWORD}
@@ -38,12 +38,12 @@ if [ $ATTEMPTS -eq 10 ]; then
 fi
 
 # 🛠️ Check/create DBs if not exist
-if su - postgres -c "psql -lqt | cut -d '|' -f 1 | grep -qw \"$DB_DATABASE\""; then
-    echo "✅ Database '$DB_DATABASE' already exists."
+if su - postgres -c "psql -lqt | cut -d '|' -f 1 | grep -qw \"$DB_NAME\""; then
+    echo "✅ Database '$DB_NAME' already exists."
 else
     echo "🚀 Creating user and databases..."
     su - postgres -c "psql -c \"CREATE USER $DB_USERNAME WITH PASSWORD '$DB_PASSWORD';\""
-    su - postgres -c "psql -c \"CREATE DATABASE $DB_DATABASE OWNER $DB_USERNAME;\""
+    su - postgres -c "psql -c \"CREATE DATABASE $DB_NAME OWNER $DB_USERNAME;\""
     su - postgres -c "psql -c \"CREATE DATABASE $DB_DATABASE_TEST OWNER $DB_USERNAME;\""
 fi
 
