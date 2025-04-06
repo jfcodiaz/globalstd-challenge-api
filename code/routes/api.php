@@ -8,6 +8,7 @@ use App\Http\Controllers\RoleTestController;
 use App\Http\Controllers\User\UserAvatarAssignController;
 use App\Http\Controllers\User\UserDeleteController;
 use App\Http\Controllers\User\UserStatusController;
+use App\Http\Controllers\User\UserStoreController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', AuthLoginController::class)->name('login');
@@ -31,5 +32,7 @@ Route::middleware(['auth:sanctum', 'block_inactive', 'preload_roles'])->group(fu
     Route::middleware('role:SuperAdmin,Admin')->group(function () {
         Route::patch('/users/{user}/status', UserStatusController::class);
         Route::delete('/users/{user}', UserDeleteController::class);
+        Route::post('/user', UserStoreController::class)->name('user.store');
+
     });
 });

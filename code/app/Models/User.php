@@ -46,13 +46,18 @@ class User extends Authenticatable implements ModelInterface
         return $this->belongsToMany(Role::class);
     }
 
-    public function hasAnyRole(array $roles): bool
+    public function hasAnyRole(array|string $roles): bool
     {
-        return $this->roles()->whereIn('name', $roles)->exists();
+        return $this->roles()->whereIn('name', (array)$roles)->exists();
     }
 
     public function avatar()
     {
         return $this->belongsTo(Media::class, 'avatar_id');
     }
+    public function assignRoles(array|string $roleNames): void
+{
+    $roleIds = Role::whereIn('name', (array)$roleNames)->pluck('id');
+    $this->roles()->syncWithoutDetaching($roleIds);
+}
 }
