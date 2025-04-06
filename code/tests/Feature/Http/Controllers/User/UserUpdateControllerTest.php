@@ -10,11 +10,6 @@ class UserUpdateControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function test_superadmin_can_update_any_user_and_roles(): void
     {
         $superAdmin = User::factory()->create();

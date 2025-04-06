@@ -53,7 +53,7 @@ class MediaShowController extends Controller
         }
 
         $file = $storage->get($path);
-        $etag = md5($file);
+        $etag = hash('sha512', $file);
 
         return Response::make($file, 200, [
             'Content-Type' => $media->mime_type,

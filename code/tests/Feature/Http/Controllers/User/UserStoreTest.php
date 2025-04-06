@@ -10,10 +10,7 @@ class UserStoreTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
+    const JUANS_EMAIL = 'juan@example.com';
 
     public function test_superadmin_can_create_user_with_roles(): void
     {
@@ -24,7 +21,7 @@ class UserStoreTest extends TestCase
 
         $response = $this->postJson(route('user.store'), [
             'name' => 'Juan Pérez',
-            'email' => 'juan@example.com',
+            'email' => self::JUANS_EMAIL,
             'password' => 'secreto123',
             'roles' => ['Client', 'Employee'],
         ]);
@@ -38,8 +35,8 @@ class UserStoreTest extends TestCase
             ],
         ]);
 
-        $this->assertDatabaseHas('users', ['email' => 'juan@example.com']);
-        $user = User::where('email', 'juan@example.com')->first();
+        $this->assertDatabaseHas('users', ['email' => self::JUANS_EMAIL]);
+        $user = User::where('email', self::JUANS_EMAIL)->first();
         $this->assertTrue($user->hasAnyRole('Client'));
         $this->assertTrue($user->hasAnyRole('Employee'));
     }

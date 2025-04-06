@@ -15,12 +15,13 @@ class MediaShowControllerTest extends TestCase
 
     protected User $user;
 
+    const MIME = 'image/jpeg';
+
     protected function setUp(): void
     {
         parent::setUp();
         Storage::fake('local');
         $this->user = User::factory()->create();
-        // $this->withoutExceptionHandling();
     }
 
     public function test_returns_original_file()
@@ -31,13 +32,13 @@ class MediaShowControllerTest extends TestCase
         $media = Media::factory()->create([
             'path' => $path,
             'disk' => 'local',
-            'mime_type' => 'image/jpeg',
+            'mime_type' => self::MIME,
         ]);
 
         $this->actingAs($this->user)
             ->get(route('media.show', ['media' => $media->id]))
             ->assertOk()
-            ->assertHeader('Content-Type', 'image/jpeg');
+            ->assertHeader('Content-Type', self::MIME);
     }
 
     public function test_returns_resized_image()
@@ -48,7 +49,7 @@ class MediaShowControllerTest extends TestCase
         $media = Media::factory()->create([
             'path' => $path,
             'disk' => 'local',
-            'mime_type' => 'image/jpeg',
+            'mime_type' => self::MIME,
         ]);
 
         $this->actingAs($this->user)
@@ -59,7 +60,7 @@ class MediaShowControllerTest extends TestCase
                 )
             )
             ->assertOk()
-            ->assertHeader('Content-Type', 'image/jpeg');
+            ->assertHeader('Content-Type', self::MIME);
     }
 
     public function test_returns_404_if_file_does_not_exist()
@@ -67,7 +68,7 @@ class MediaShowControllerTest extends TestCase
         $media = Media::factory()->create([
             'path' => 'non/existing/path.jpg',
             'disk' => 'local',
-            'mime_type' => 'image/jpeg',
+            'mime_type' => self::MIME,
         ]);
 
         $this->actingAs($this->user)
@@ -84,7 +85,7 @@ class MediaShowControllerTest extends TestCase
         $media = Media::factory()->create([
             'path' => 'test.jpg',
             'disk' => 's3',
-            'mime_type' => 'image/jpeg',
+            'mime_type' => self::MIME,
         ]);
 
         $this->actingAs($this->user)
@@ -117,7 +118,7 @@ class MediaShowControllerTest extends TestCase
         $media = Media::factory()->create([
             'path' => $path,
             'disk' => 'local',
-            'mime_type' => 'image/jpeg',
+            'mime_type' => self::MIME,
         ]);
 
         $this->actingAs($this->user)
@@ -137,7 +138,7 @@ class MediaShowControllerTest extends TestCase
         $media = Media::factory()->create([
             'path' => $path,
             'disk' => 'local',
-            'mime_type' => 'image/jpeg',
+            'mime_type' => self::MIME,
         ]);
 
         $this->actingAs($this->user)

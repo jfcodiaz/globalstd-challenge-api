@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\User;
 
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -11,10 +10,7 @@ class UserIndexTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
+    const JOHNS_EMAIL = 'john@example.com';
 
     public function test_superadmin_can_list_users_paginated(): void
     {
@@ -28,7 +24,7 @@ class UserIndexTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonStructure([
-            'data', 'links'
+            'data', 'links',
         ]);
 
         $this->assertCount(10, $response->json('data'));
@@ -42,7 +38,7 @@ class UserIndexTest extends TestCase
 
         $john = User::factory()->create([
             'name' => 'John Doe',
-            'email' => 'john@example.com',
+            'email' => self::JOHNS_EMAIL,
         ]);
         $john->assignRoles(['Client']);
 
@@ -55,7 +51,7 @@ class UserIndexTest extends TestCase
         // Buscar por nombre
         $response = $this->getJson(route('user.index', ['search' => 'John']));
         $response->assertOk();
-        $this->assertEquals('john@example.com', $response->json('data.0.email'));
+        $this->assertEquals(self::JOHNS_EMAIL, $response->json('data.0.email'));
 
         // Buscar por email
         $response = $this->getJson(route('user.index', ['search' => 'jane@']));
@@ -65,7 +61,7 @@ class UserIndexTest extends TestCase
         // Buscar por nombre de rol
         $response = $this->getJson(route('user.index', ['search' => 'Client']));
         $response->assertOk();
-        $this->assertEquals('john@example.com', $response->json('data.0.email'));
+        $this->assertEquals(self::JOHNS_EMAIL, $response->json('data.0.email'));
     }
 
     public function test_client_cannot_access_user_list(): void
@@ -97,5 +93,4 @@ class UserIndexTest extends TestCase
         $response->assertOk();
         $response->assertJsonStructure(['data', 'links']);
     }
-
 }
