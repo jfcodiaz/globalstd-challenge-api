@@ -50,4 +50,9 @@ class User extends Authenticatable implements ModelInterface
     {
         return $this->roles()->whereIn('name', $roles)->exists();
     }
+
+    public function avatar()
+    {
+        return $this->belongsTo(Media::class, 'avatar_id');
+    }
 }
