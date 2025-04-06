@@ -9,6 +9,7 @@ use App\Http\Controllers\User\UserAvatarAssignController;
 use App\Http\Controllers\User\UserDeleteController;
 use App\Http\Controllers\User\UserStatusController;
 use App\Http\Controllers\User\UserStoreController;
+use App\Http\Controllers\User\UserUpdateController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', AuthLoginController::class)->name('login');
@@ -27,6 +28,8 @@ Route::middleware(['auth:sanctum', 'block_inactive', 'preload_roles'])->group(fu
     // Media
     Route::post('media', MediaStoreController::class)->name('media.store');
     Route::patch('/user/avatar', UserAvatarAssignController::class)->name('user.avatar.assign');
+    Route::post('/users/{user}', UserUpdateController::class)
+        ->name('user.update');
 
     // Routes only accessible by SuperAdmin and Admin
     Route::middleware('role:SuperAdmin,Admin')->group(function () {

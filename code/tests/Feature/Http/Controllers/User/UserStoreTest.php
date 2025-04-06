@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\User;
 
-use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -27,7 +26,7 @@ class UserStoreTest extends TestCase
             'name' => 'Juan Pérez',
             'email' => 'juan@example.com',
             'password' => 'secreto123',
-            'roles' => ['Client', 'Employee']
+            'roles' => ['Client', 'Employee'],
         ]);
         $response->assertCreated();
 
@@ -35,8 +34,8 @@ class UserStoreTest extends TestCase
             'data' => [
                 'id', 'name', 'email',
                 'roles' => [['id', 'name']],
-                'avatar'
-            ]
+                'avatar',
+            ],
         ]);
 
         $this->assertDatabaseHas('users', ['email' => 'juan@example.com']);
@@ -56,7 +55,7 @@ class UserStoreTest extends TestCase
             'name' => '',
             'email' => 'invalid',
             'password' => '123',
-            'roles' => ['InvalidRole']
+            'roles' => ['InvalidRole'],
         ]);
 
         $response->assertStatus(422);
@@ -73,7 +72,7 @@ class UserStoreTest extends TestCase
         $response = $this->postJson(route('user.store'), [
             'name' => 'Not allowed',
             'email' => 'nope@example.com',
-            'password' => '12345678'
+            'password' => '12345678',
         ]);
 
         $response->assertForbidden();
@@ -84,7 +83,7 @@ class UserStoreTest extends TestCase
         $response = $this->postJson(route('user.store'), [
             'name' => 'Guest',
             'email' => 'guest@example.com',
-            'password' => '12345678'
+            'password' => '12345678',
         ]);
 
         $response->assertUnauthorized();

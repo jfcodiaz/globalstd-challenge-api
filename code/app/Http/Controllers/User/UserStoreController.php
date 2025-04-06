@@ -5,12 +5,12 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 
 class UserStoreController extends Controller
 {
-    public function __invoke(UserStoreRequest $request, UserRepository $userRepository ): JsonResponse
+    public function __invoke(UserStoreRequest $request, UserRepository $userRepository): JsonResponse
     {
         $data = $request->validated();
 
@@ -20,7 +20,7 @@ class UserStoreController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        if (!empty($data['roles'])) {
+        if (! empty($data['roles'])) {
             $user->assignRoles($data['roles']);
         }
 
