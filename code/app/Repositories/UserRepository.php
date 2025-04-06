@@ -40,4 +40,20 @@ class UserRepository extends BaseRepository
 
         return $user;
     }
+
+    public function paginateWithFilters(?string $search, int $perPage = 15)
+    {
+        return User::query()
+            ->with(['roles', 'avatar'])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'ILIKE', "%{$search}%")
+                        ->orWhere('email', 'ILIKE', "%{$search}%")
+                        ->orWhereHas('roles', function ($r) use ($search) {
+                            $r->where('name', 'ILIKE', "%{$search}%");
+                        });
+                });
+            })
+            ->paginate($perPage);
+    }
 }

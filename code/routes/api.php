@@ -7,6 +7,7 @@ use App\Http\Controllers\Media\MediaStoreController;
 use App\Http\Controllers\RoleTestController;
 use App\Http\Controllers\User\UserAvatarAssignController;
 use App\Http\Controllers\User\UserDeleteController;
+use App\Http\Controllers\User\UserIndexController;
 use App\Http\Controllers\User\UserStatusController;
 use App\Http\Controllers\User\UserStoreController;
 use App\Http\Controllers\User\UserUpdateController;
@@ -36,6 +37,9 @@ Route::middleware(['auth:sanctum', 'block_inactive', 'preload_roles'])->group(fu
         Route::patch('/users/{user}/status', UserStatusController::class);
         Route::delete('/users/{user}', UserDeleteController::class);
         Route::post('/user', UserStoreController::class)->name('user.store');
-
+        Route::get('/users', UserIndexController::class)->name('user.index');
+    });
+    Route::middleware('role:SuperAdmin,Admin,Employee')->group(function () {
+        Route::get('/users', UserIndexController::class)->name('user.index');
     });
 });
