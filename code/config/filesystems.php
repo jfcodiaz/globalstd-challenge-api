@@ -59,6 +59,11 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'fixtures' => [
+            'driver' => 'local',
+            'root' => base_path('tests/Fixtures'),
+            'throw' => false,
+        ],
 
     ],
 

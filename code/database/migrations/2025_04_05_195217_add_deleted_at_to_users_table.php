@@ -9,16 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->softDeletes();
             $table->boolean('is_active')->default(true);
+            $table->softDeletes();
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropSoftDeletes();
             $table->dropColumn('is_active');
+            $table->dropSoftDeletes();
         });
     }
 };

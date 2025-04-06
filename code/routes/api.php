@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\Auth\AuthLoginController;
 use App\Http\Controllers\Auth\AuthLogoutController;
+use App\Http\Controllers\Media\MediaShowController;
 use App\Http\Controllers\RoleTestController;
 use App\Http\Controllers\User\UserDeleteController;
 use App\Http\Controllers\User\UserStatusController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', AuthLoginController::class)->name('login');
+Route::get('/media/{media}', MediaShowController::class)->name('media.show');
 
 Route::middleware(['auth:sanctum', 'block_inactive', 'preload_roles'])->group(function () {
 
