@@ -34,7 +34,7 @@ class AuthLoginControllerTest extends TestCase
         ]);
 
         $response->assertOk();
-        $response->assertJsonStructure(['token', 'user']);
+        $response->assertJsonStructure(['data' => ['token', 'user']]);
     }
 
     public function test_login_fails_with_invalid_credentials(): void
