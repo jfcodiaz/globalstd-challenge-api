@@ -4,7 +4,7 @@ namespace App\Http\Resources\Auth;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LoginResponse extends JsonResource
+class LoginResource extends JsonResource
 {
     public function toArray($request): array
     {

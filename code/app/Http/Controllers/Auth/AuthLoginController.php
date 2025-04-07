@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthLoginRequest;
-use App\Http\Resources\Auth\LoginResponse;
+use App\Http\Resources\Auth\LoginResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AuthLoginController extends Controller
 {
-    public function __invoke(AuthLoginRequest $request): LoginResponse
+    public function __invoke(AuthLoginRequest $request): LoginResource
     {
         $credentials = $request->only('email', 'password');
 
@@ -24,7 +24,7 @@ class AuthLoginController extends Controller
             );
             $token = $user->createToken('api-token')->plainTextToken;
 
-            return new LoginResponse([
+            return new LoginResource([
                 'token' => $token,
                 'user' => $user,
             ]);

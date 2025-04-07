@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Role;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RoleResponse extends JsonResource
+class RoleResource extends JsonResource
 {
     public function toArray($request)
     {
