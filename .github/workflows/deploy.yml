@@ -31,6 +31,11 @@ jobs:
         docker build \
           --file docker/web/Dockerfile \
           --target prod \
+          --build-arg DB_DATABASE=${{ secrets.DB_DATABASE }} \
+          --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }} \
+          --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          --build-arg APP_DEFAULT_PASSWORD=${{ secrets.APP_DEFAULT_PASSWORD }} \
+          --build-arg APP_KEY=${{ secrets.APP_KEY }} \
           -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA \
           .
         docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA
