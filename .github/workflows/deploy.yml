@@ -28,7 +28,11 @@ jobs:
 
     - name: 🐳 Build and push Docker image
       run: |
-        docker build -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA .
+        docker build \
+          --file docker/web/Dockerfile \
+          --target prod \
+          -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA \
+          .
         docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA
 
     - name: 🚀 Deploy to Cloud Run
@@ -38,4 +42,5 @@ jobs:
           --platform managed \
           --region ${{ secrets.GCP_REGION }} \
           --allow-unauthenticated \
+          --set-env-vars "APP_KEY=${{ secrets.APP_KEY }},DB_DATABASE=${{ secrets.DB_DATABASE }},DB_DATABASE_TEST=${{ secrets.DB_DATABASE_TEST }},DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }},APP_ENV=production,APP_DEBUG=true,DB_CONNECTION=pgsql" \
           --quiet

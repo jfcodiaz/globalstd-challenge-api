@@ -1,0 +1,34 @@
+{
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.rulers": [
+        80,
+        120
+    ],
+    "editor.tabSize": 2,
+    "editor.renderWhitespace": "all",
+    "[vue]": {
+        "editor.tabSize": 2
+    },
+    "[javascript]": {
+        "editor.tabSize": 2
+    },
+    "[json]": {
+        "editor.tabSize": 2
+    },
+    "[php]": {
+        "editor.tabSize": 4
+    },
+    "workbench.colorCustomizations": {
+        "tab.activeBackground": "#1E402F",
+        "tab.inactiveBackground": "#2D6040",
+        "tab.activeForeground": "#E8F5E9",
+        "tab.inactiveForeground": "#A5D6A7",
+        "tab.hoverBackground": "#3E7E55",
+        "tab.border": "#3E7E55",
+        "editor.background": "#13231b"
+    },
+    "explorer.autoReveal": true,
+    "explorer.compactFolders": false
+}
