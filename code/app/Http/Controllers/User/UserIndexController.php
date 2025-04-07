@@ -15,8 +15,10 @@ class UserIndexController extends Controller
 
         $perPage = (int) $request->input('per_page', 15);
         $search = $request->input('search');
+        $role = $request->input('role');
+        $isActive = $request->input('is_active');
 
-        $users = $repository->paginateWithFilters($search, $perPage);
+        $users = $repository->paginateWithFilters($search, $perPage, $role, $isActive);
 
         return new UserCollectionResources($users);
     }

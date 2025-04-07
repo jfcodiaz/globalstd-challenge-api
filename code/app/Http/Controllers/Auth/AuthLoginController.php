@@ -22,6 +22,11 @@ class AuthLoginController extends Controller
                 'roles',
                 $user->roles->makeHidden('pivot')
             );
+            if ($user->is_active === false) {
+                throw ValidationException::withMessages([
+                    'email' => ['Your account is not active.'],
+                ]);
+            }
             $token = $user->createToken('api-token')->plainTextToken;
 
             return new LoginResource([

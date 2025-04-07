@@ -41,7 +41,7 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
-    public function paginateWithFilters(?string $search, int $perPage = 15)
+    public function paginateWithFilters(?string $search, int $perPage = 15, ?string $role = null, ?int $isActive = null)
     {
         return User::query()
             ->with(['roles', 'avatar'])
@@ -53,6 +53,14 @@ class UserRepository extends BaseRepository
                             $r->where('name', 'ILIKE', "%{$search}%");
                         });
                 });
+            })
+            ->when($role, function ($query, $role) {
+                $query->whereHas('roles', function ($r) use ($role) {
+                    $r->where('name', $role);
+                });
+            })
+            ->when($isActive !== null, function ($query) use ($isActive) {
+                $query->where('is_active', $isActive === 1);
             })
             ->paginate($perPage);
     }

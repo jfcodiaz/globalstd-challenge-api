@@ -16,7 +16,6 @@ class MediaShowController extends Controller
     {
         $disk = $media->disk ?? config('filesystems.default');
         $storage = Storage::disk($disk);
-
         $isImage = str_starts_with($media->mime_type, 'image/');
         $width = $request->input('w');
         $height = $request->input('h');
@@ -35,7 +34,6 @@ class MediaShowController extends Controller
         }
 
         $path = $media->path;
-
         // Resize image if applicable
         if ($isImage && ($width || $height)) {
             $resizedPath = "resized/{$width}x{$height}/{$media->path}";

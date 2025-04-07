@@ -21,13 +21,12 @@ class UserIndexTest extends TestCase
         User::factory()->count(25)->create();
 
         $response = $this->getJson(route('user.index', ['per_page' => 10]));
-
         $response->assertOk();
         $response->assertJsonStructure([
             'data', 'links',
         ]);
 
-        $this->assertCount(10, $response->json('data'));
+        $this->assertCount(10, $response->json('data.users'));
     }
 
     public function test_can_filter_users_by_name_email_or_role(): void
@@ -39,29 +38,47 @@ class UserIndexTest extends TestCase
         $john = User::factory()->create([
             'name' => 'John Doe',
             'email' => self::JOHNS_EMAIL,
+            'is_active' => true,
         ]);
         $john->assignRoles(['Client']);
 
         $jane = User::factory()->create([
             'name' => 'Jane Smith',
             'email' => 'jane@demo.com',
+            'is_active' => false,
         ]);
         $jane->assignRoles(['Employee']);
 
         // Buscar por nombre
         $response = $this->getJson(route('user.index', ['search' => 'John']));
         $response->assertOk();
-        $this->assertEquals(self::JOHNS_EMAIL, $response->json('data.0.email'));
+        $this->assertEquals(self::JOHNS_EMAIL, $response->json('data.users.0.email'));
 
         // Buscar por email
         $response = $this->getJson(route('user.index', ['search' => 'jane@']));
         $response->assertOk();
-        $this->assertEquals('jane@demo.com', $response->json('data.0.email'));
+        $this->assertEquals('jane@demo.com', $response->json('data.users.0.email'));
 
-        // Buscar por nombre de rol
+        // Buscar por nombre de rol (con `search`)
         $response = $this->getJson(route('user.index', ['search' => 'Client']));
         $response->assertOk();
-        $this->assertEquals(self::JOHNS_EMAIL, $response->json('data.0.email'));
+        $this->assertEquals(self::JOHNS_EMAIL, $response->json('data.users.0.email'));
+
+        // Filtro directo por rol
+        $response = $this->getJson(route('user.index', ['role' => 'Client']));
+        $response->assertOk();
+        $this->assertEquals(self::JOHNS_EMAIL, $response->json('data.users.0.email'));
+
+        // Filtro por estado activo
+        $response = $this->getJson(route('user.index', ['is_active' => true]));
+        $response->assertOk();
+        $this->assertTrue($response->json('data.users.0.is_active'));
+
+        // Filtro por estado inactivo
+        $response = $this->getJson(route('user.index', ['is_active' => false]));
+
+        $response->assertOk();
+        $this->assertFalse($response->json('data.users.0.is_active'));
     }
 
     public function test_client_cannot_access_user_list(): void
