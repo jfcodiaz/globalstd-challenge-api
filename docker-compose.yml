@@ -29,6 +29,11 @@ services:
     build:
       context: .
       dockerfile: docker/web/Dockerfile
+      target: Prod
+      args:
+        DB_DATABASE: ${DB_NAME}
+        DB_USERNAME: ${DB_USERNAME}
+        DB_PASSWORD: ${DB_PASSWORD}
     container_name: ${PROJECT_PREFIX}-prod
     hostname: ${PROJECT_PREFIX}-prod
     volumes:

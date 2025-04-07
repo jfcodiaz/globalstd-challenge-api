@@ -114,16 +114,47 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 # ============================
 FROM base AS prod
 
+ARG DB_DATABASE
+ARG DB_USERNAME
+ARG DB_PASSWORD
+ARG APP_KEY
+ARG APP_DEFAULT_PASSWORD
+
+ENV DB_DATABASE=${DB_DATABASE}
+ENV DB_USERNAME=${DB_USERNAME}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV APP_KEY=${APP_KEY}
+ENV APP_ENV=production
+ENV DB_CONNECTION=pgsql
+ENV APP_DEFAULT_PASSWORD=${APP_DEFAULT_PASSWORD}
+
 COPY ./docker/web/supervisord/supervisord-prd.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY ./code /var/www/html
-
-COPY ./docker/web/init.sh /init.sh
-RUN composer install --working-dir=/var/www/html
-
 WORKDIR /var/www/html
 
+RUN composer install --working-dir=/var/www/html
+
+# RUN composer install --no-dev --no-autoloader --working-dir=/var/www/html
+RUN mkdir -p storage/framework/views storage/logs && \
+  chown -R www-data:www-data storage && \
+  chmod -R 775 storage && \
+  php artisan config:cache && \
+  php artisan route:cache && \
+  php artisan view:cache && \
+  php artisan storage:link && \
+  php artisan optimize
+
+# Inicializar PostgreSQL, crear usuario y base de datos, migrar y seedear
+RUN service postgresql start && \
+    su - postgres -c "psql -c \"CREATE USER $DB_USERNAME WITH PASSWORD '$DB_PASSWORD';\"" && \
+    su - postgres -c "psql -c \"CREATE DATABASE $DB_DATABASE OWNER $DB_USERNAME;\"" && \
+    php artisan migrate --force --seed && \
+    service postgresql stop
+
+RUN chmod -R 777 storage
+
 EXPOSE 8080
-CMD [ "bash", "/init.sh" ]
+# CMD [ "bash", "/init.sh" ]
 # CMD ["tail", "-f", "/var/log/supervisor/supervisord.log"]
-#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
