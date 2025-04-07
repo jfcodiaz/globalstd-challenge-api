@@ -155,6 +155,4 @@ RUN service postgresql start && \
 RUN chmod -R 777 storage
 
 EXPOSE 8080
-# CMD [ "bash", "/init.sh" ]
-# CMD ["tail", "-f", "/var/log/supervisor/supervisord.log"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
