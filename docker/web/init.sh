@@ -49,7 +49,13 @@ fi
 
 # 🚀 Run Laravel migrations
 echo "🚀 Running migrations..."
-php /var/www/html/artisan migrate --force
+
+if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
+    echo "📂 Only the first time, it run seeders 🚀"
+    php /var/www/html/artisan migrate --force --seed
+else
+    php /var/www/html/artisan migrate --force
+fi
 
 # Keep the container alive
 tail -f /dev/null

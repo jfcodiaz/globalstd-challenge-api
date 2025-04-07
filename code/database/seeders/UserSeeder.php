@@ -23,6 +23,15 @@ class UserSeeder extends Seeder
             'email' => 'admin@local.dev',
             'name' => 'Admin Test',
         ]);
-        User::factory(50)->withRoles(['Client'])->create();
+        User::factory(150)->withRoles(['Client'])->create();
+        User::factory(10)->withRoles(['Employee'])->create([
+
+        ]);
+        User::factory(10)->withRoles(['Employee'])->create([
+            'is_active' => false,
+        ]);
+        User::factory(10)->withRoles(['Client'])->create([
+            'is_active' => false,
+        ]);
     }
 }

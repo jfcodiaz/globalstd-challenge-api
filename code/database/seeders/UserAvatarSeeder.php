@@ -13,8 +13,11 @@ class UserAvatarSeeder extends Seeder
 {
     public function run(): void
     {
-        $path = Storage::disk('fixtures')
-            ->path('images/avatar_mobile.jpg');
+        // Fix rápido: asignar www-data como dueño recursivamente al directorio 'uploads'
+        // queda pediente hacerlo de una mejor forma
+        $this->fixUploadPermissions();
+
+        $path = Storage::disk('fixtures')->path('images/avatar_mobile.jpg');
 
         $file = new UploadedFile(
             $path,
@@ -29,11 +32,34 @@ class UserAvatarSeeder extends Seeder
         User::all()->each(function (User $user) use ($file, $uploadService) {
             $attributes = $uploadService($file, 'avatar', 'local');
 
-            Media::create([
+            $media = Media::create([
                 ...$attributes,
                 'model_type' => User::class,
                 'model_id' => $user->id,
             ]);
+
+            $user->update([
+                'avatar_id' => $media->id,
+            ]);
         });
+    }
+
+    protected function fixUploadPermissions(): void
+    {
+        $disk = 'local';
+
+        if (! in_array($disk, ['local', 'public'])) {
+            return;
+        }
+
+        if (PHP_OS_FAMILY === 'Windows') {
+            return;
+        }
+
+        $path = Storage::disk($disk)->path('uploads');
+
+        if (file_exists($path)) {
+            exec('chown -R www-data:www-data '.escapeshellarg($path));
+        }
     }
 }
