@@ -6,6 +6,15 @@ export DB_DATABASE_TEST=${DB_DATABASE_TEST}
 export DB_USERNAME=${DB_USERNAME}
 export DB_PASSWORD=${DB_PASSWORD}
 
+# Copy .env.example to .env if it does not exist
+ENV_FILE="/var/www/html/.env"
+if [ ! -f "$ENV_FILE" ]; then
+    echo "📄 .env file does not exist. Copying .env.example to .env... 🚀"
+    cp /var/www/html/.env.example "$ENV_FILE"
+else
+    echo "✅ .env file already exists. Skipping copy."
+fi
+
 VENDOR_DIR="/var/www/html/vendor"
 
 if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
@@ -19,6 +28,15 @@ chown -R www-data:www-data /var/www/html/storage/framework/views
 chmod -R 775 /var/www/html/storage/framework/views
 chown -R www-data:www-data /var/www/html/storage/logs
 chmod -R 775 /var/www/html/storage/logs
+
+# Copy .env.example to .env if it does not exist
+ENV_FILE="/var/www/html/.env"
+if [ ! -f "$ENV_FILE" ]; then
+    echo "📄 .env file does not exist. Copying .env.example to .env... 🚀"
+    cp /var/www/html/.env.example "$ENV_FILE"
+else
+    echo "✅ .env file already exists. Skipping copy."
+fi
 
 # ✅ Run supervisord (including PostgreSQL, PHP-FPM, and Nginx)
 echo "🔧 Starting supervisord..."
@@ -48,12 +66,19 @@ else
 fi
 
 # 🚀 Run Laravel migrations
-echo "🚀 Running migrations..."
 
-if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
-    echo "📂 Only the first time, it run seeders 🚀"
+echo "🚀 Running migrations..."
+USER_COUNT=$(su - postgres -c "psql -d $DB_NAME -t -c \"SELECT COUNT(*) FROM users;\"" | xargs || echo "0")
+if [[ -z "$USER_COUNT" || ! "$USER_COUNT" =~ ^[0-9]+$ ]]; then
+    USER_COUNT=0
+fi
+echo "👤 Number of users in the database: $USER_COUNT"
+if [ "$USER_COUNT" -eq 0 ]; then
+    echo "📂 No users found in the database. Running migrations with seeders... 🚀"
     php /var/www/html/artisan migrate --force --seed
+    chmod -R 777 /var/www/html/storage
 else
+    echo "✅ Users already exist in the database. Running migrations without seeders... 🚀"
     php /var/www/html/artisan migrate --force
 fi
 
