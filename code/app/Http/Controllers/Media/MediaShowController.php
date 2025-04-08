@@ -12,6 +12,75 @@ use Intervention\Image\ImageManager;
 
 class MediaShowController extends Controller
 {
+    /**
+     * Display a media file by ID.
+     *
+     * This endpoint returns a file or image from the system. If the media is stored on S3,
+     * it redirects to the public URL. If it is an image, it can optionally be resized
+     * using query parameters `w` (width) and `h` (height).
+     *
+     * @OA\Get(
+     *     path="/api/media/{media}",
+     *     summary="Get media file",
+     *     description="Serve or redirect a media file. Resize if image using query params `w` and `h`.",
+     *     operationId="getMediaFile",
+     *     tags={"Media"},
+     *
+     *     @OA\Parameter(
+     *         name="media",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the media file",
+     *
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="w",
+     *         in="query",
+     *         required=false,
+     *         description="Optional width for image resizing",
+     *
+     *         @OA\Schema(type="integer", example=300)
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="h",
+     *         in="query",
+     *         required=false,
+     *         description="Optional height for image resizing",
+     *
+     *         @OA\Schema(type="integer", example=200)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Media file served successfully",
+     *
+     *         @OA\Header(
+     *             header="Content-Type",
+     *             description="MIME type of the file",
+     *
+     *             @OA\Schema(type="string")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=302,
+     *         description="Redirect to S3 public URL"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Media not found",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="message", type="string", example="Media not found.")
+     *         )
+     *     )
+     * )
+     */
     public function __invoke(MediaShowRequest $request, Media $media)
     {
         $disk = $media->disk ?? config('filesystems.default');
@@ -34,6 +103,7 @@ class MediaShowController extends Controller
         }
 
         $path = $media->path;
+
         // Resize image if applicable
         if ($isImage && ($width || $height)) {
             $resizedPath = "resized/{$width}x{$height}/{$media->path}";

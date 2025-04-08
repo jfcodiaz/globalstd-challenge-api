@@ -19,7 +19,7 @@ class UserUpdateControllerTest extends TestCase
         $user = User::factory()->create();
         $user->assignRoles(['Client']);
 
-        $response = $this->postJson(route('user.update', $user), [
+        $response = $this->patchJson(route('user.update', $user), [
             'name' => 'Updated Name',
             'email' => 'updated@example.com',
             'password' => 'newpassword',
@@ -40,7 +40,7 @@ class UserUpdateControllerTest extends TestCase
 
         $user = User::factory()->create();
 
-        $response = $this->postJson(route('user.update', $user), [
+        $response = $this->patchJson(route('user.update', $user), [
             'name' => 'Admin Edited',
             'email' => 'admin-edited@example.com',
         ]);
@@ -58,7 +58,7 @@ class UserUpdateControllerTest extends TestCase
         $user->assignRoles(['Client']);
         $this->actingAs($user);
 
-        $response = $this->postJson(route('user.update', $user), [
+        $response = $this->patchJson(route('user.update', $user), [
             'name' => 'Self Updated',
             'email' => 'self@example.com',
             'password' => 'newsecurepass',
@@ -76,7 +76,7 @@ class UserUpdateControllerTest extends TestCase
         $target = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->postJson(route('user.update', $target), [
+        $response = $this->patchJson(route('user.update', $target), [
             'name' => 'Hacker',
         ]);
 
@@ -87,7 +87,7 @@ class UserUpdateControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->postJson(route('user.update', $user), [
+        $response = $this->patchJson(route('user.update', $user), [
             'name' => 'Guest Hack',
         ]);
 
@@ -100,7 +100,7 @@ class UserUpdateControllerTest extends TestCase
         $user->assignRoles(['Employee']);
         $this->actingAs($user);
 
-        $response = $this->postJson(route('user.update', $user), [
+        $response = $this->patchJson(route('user.update', $user), [
             'roles' => ['SuperAdmin'],
         ]);
 
@@ -118,7 +118,7 @@ class UserUpdateControllerTest extends TestCase
         $user = User::factory()->create();
         $user->assignRoles(['Client', 'Employee']);
 
-        $response = $this->postJson(route('user.update', $user), [
+        $response = $this->patchJson(route('user.update', $user), [
             'roles' => ['Admin'],
         ]);
 
@@ -139,7 +139,7 @@ class UserUpdateControllerTest extends TestCase
         $user = User::factory()->create();
         $user->assignRoles(['Client', 'Employee']);
 
-        $response = $this->postJson(route('user.update', $user), [
+        $response = $this->patchJson(route('user.update', $user), [
             'roles' => ['Employee'],
         ]);
 
