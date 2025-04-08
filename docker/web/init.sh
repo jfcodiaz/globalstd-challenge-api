@@ -82,5 +82,10 @@ else
     php /var/www/html/artisan migrate --force
 fi
 
+if [ ! -f storage/api-docs/api-docs.json ]; then
+  echo "→ Generando documentación Swagger..."
+  php artisan l5-swagger:generate
+fi
+
 # Keep the container alive
 tail -f /dev/null
