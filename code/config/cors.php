@@ -6,13 +6,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'https://globalstd-challenge.pakodiaz.dev',
-    ],
-
-    'allowed_origins_patterns' => [
-        '^http:\/\/localhost(:[0-9]+)?$',
-    ],
+    'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', '*')),
 
     'allowed_headers' => ['*'],
 

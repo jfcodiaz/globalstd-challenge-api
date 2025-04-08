@@ -131,6 +131,7 @@ ENV APP_DEFAULT_PASSWORD=${APP_DEFAULT_PASSWORD}
 COPY ./docker/web/supervisord/supervisord-prd.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY ./code /var/www/html
+COPY ./code/.env.example /var/www/html/.env
 WORKDIR /var/www/html
 
 RUN composer install --working-dir=/var/www/html
@@ -155,6 +156,4 @@ RUN service postgresql start && \
 RUN chmod -R 777 storage
 
 EXPOSE 8080
-# CMD [ "bash", "/init.sh" ]
-# CMD ["tail", "-f", "/var/log/supervisor/supervisord.log"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
