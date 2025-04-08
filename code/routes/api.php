@@ -27,10 +27,9 @@ Route::middleware(['auth:sanctum', 'block_inactive', 'preload_roles'])->group(fu
     Route::get('/test/client', [RoleTestController::class, 'show'])->middleware('role:Client');
 
     // Media
-    Route::post('media', MediaStoreController::class)->name('media.store');
+    Route::post('/media', MediaStoreController::class)->name('media.store');
     Route::patch('/user/avatar', UserAvatarAssignController::class)->name('user.avatar.assign');
-    Route::post('/users/{user}', UserUpdateController::class)
-        ->name('user.update');
+    Route::patch('/users/{user}', UserUpdateController::class)->name('user.update');
 
     // Routes only accessible by SuperAdmin and Admin
     Route::middleware('role:SuperAdmin,Admin')->group(function () {
@@ -39,6 +38,7 @@ Route::middleware(['auth:sanctum', 'block_inactive', 'preload_roles'])->group(fu
         Route::post('/user', UserStoreController::class)->name('user.store');
         Route::get('/users', UserIndexController::class)->name('user.index');
     });
+
     Route::middleware('role:SuperAdmin,Admin,Employee')->group(function () {
         Route::get('/users', UserIndexController::class)->name('user.index');
     });

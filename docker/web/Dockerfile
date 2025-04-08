@@ -155,5 +155,7 @@ RUN service postgresql start && \
 
 RUN chmod -R 777 storage
 
+RUN php artisan l5-swagger:generate
+
 EXPOSE 8080
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
