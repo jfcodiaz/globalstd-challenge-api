@@ -4,6 +4,9 @@
 FROM ubuntu:22.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # Install base dependencies
 RUN apt-get update && apt-get install -y \
@@ -26,7 +29,10 @@ RUN apt-get update && apt-get install -y \
   python3 \
   python3-pip \
   postgresql postgresql-contrib \
-  libpq-dev
+  libpq-dev \
+  locales fonts-noto-color-emoji && \
+  locale-gen en_US.UTF-8 && \
+  update-locale LANG=en_US.UTF-8
 
 # Add PHP 8.2 repository
 RUN add-apt-repository ppa:ondrej/php -y && apt-get update

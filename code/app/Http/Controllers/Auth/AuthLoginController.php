@@ -31,13 +31,13 @@ class AuthLoginController extends Controller
      *                 property="email",
      *                 type="string",
      *                 format="email",
-     *                 example="user@example.com"
+     *                 example="admin@local.dev"
      *             ),
      *             @OA\Property(
      *                 property="password",
      *                 type="string",
      *                 format="password",
-     *                 example="password123"
+     *                 example="S3crE7.p@55word"
      *             )
      *         )
      *     ),

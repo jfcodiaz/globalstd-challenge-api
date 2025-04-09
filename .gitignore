@@ -1,5 +1,6 @@
 .history
 key.json
 .env
-.code/storage/framework/cache
-.code/storage/framework/views
+./code/storage/framework/cache
+./code/storage/framework/views
+./code/storage/api-docs/api-docs.json
