@@ -37,6 +37,7 @@ jobs:
           --build-arg APP_DEFAULT_PASSWORD=${{ secrets.APP_DEFAULT_PASSWORD }} \
           --build-arg APP_KEY=${{ secrets.APP_KEY }} \
           --build-arg L5_SWAGGER_USE_ABSOLUTE_PATH=false \
+          --build-arg L5_SWAGGER_CONST_HOST=${{ vars.L5_SWAGGER_CONST_HOST}} \
           -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA \
           .
         docker push ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/php-repo/php-app:$GITHUB_SHA
