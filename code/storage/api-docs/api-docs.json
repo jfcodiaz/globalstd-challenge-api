@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost",
+            "url": "https://globalstd-challenge-api.pakodiaz.dev",
             "description": "API GlobalSTD - Servidor principal"
         }
     ],
@@ -40,12 +40,12 @@
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "user@example.com"
+                                        "example": "admin@local.dev"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "password123"
+                                        "example": "S3crE7.p@55word"
                                     }
                                 },
                                 "type": "object"
